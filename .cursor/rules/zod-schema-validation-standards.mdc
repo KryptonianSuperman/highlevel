@@ -1,0 +1,42 @@
+---
+description: Enforce Zod validation at all external input boundaries
+alwaysApply: true
+---
+
+# Zod Schema Validation Standards
+
+When generating or modifying code that handles external input, enforce strict schema validation with `zod` in React and Next.js codepaths.
+
+## Core Requirements
+
+- **Single source of truth:** Define a Zod schema for each external payload before business logic runs.
+- **Type inference only:** Derive TS types with `z.infer<typeof SchemaName>`; do not maintain duplicate interfaces.
+- **Fail fast at boundaries:** Validate request body/query/form input at the edge, then pass typed data inward.
+
+## Backend/API Edges
+
+- Parse incoming request bodies and query parameters with `schema.safeParse()`.
+- If parsing fails, immediately return `400 Bad Request` with formatted Zod errors.
+
+```ts
+const result = createUserSchema.safeParse(await req.json());
+if (!result.success) {
+  return NextResponse.json(
+    { errors: result.error.format() },
+    { status: 400 }
+  );
+}
+const payload: CreateUserInput = result.data;
+```
+
+## Frontend Edges
+
+- Integrate schemas directly with form libraries (for example `zodResolver` with React Hook Form).
+- Map Zod validation issues cleanly to UI error states and field-level messages.
+
+```ts
+const form = useForm<FormValues>({
+  resolver: zodResolver(formSchema),
+  defaultValues: { email: "", password: "" },
+});
+```

@@ -1,0 +1,9 @@
+---
+description: Enforce TypeScript-only file and language usage
+alwaysApply: true
+---
+
+# TypeScript File and Language Enforcement
+
+- Always write and refactor code using TypeScript files (`.ts`) and TypeScript React files (`.tsx`).
+- Never generate, suggest, or modify JavaScript files (`.js` or `.jsx`).

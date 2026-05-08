@@ -1,0 +1,15 @@
+---
+description: Enforce Server Actions and optimistic UI for mutations
+globs: app/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Next.js Data Mutation Constraints
+
+Handle all form submissions and data mutations through Next.js Server Actions with optimistic updates.
+
+- ALWAYS execute data mutations through Next.js Server Actions.
+- NEVER use client-side `fetch` calls to internal API routes for form submission or state mutation.
+- Define Server Actions in a separate file with the `"use server"` directive or inline in a Server Component.
+- For user-triggered mutations, ALWAYS pair the Server Action with `useOptimistic`.
+- Update UI immediately through optimistic state while the Server Action resolves in the background.

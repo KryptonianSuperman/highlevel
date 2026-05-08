@@ -1,0 +1,34 @@
+---
+description: Prevent memory bloat and request-scope leaks in Next.js SSR code
+globs: **/*.{js,jsx,ts,tsx}
+alwaysApply: false
+---
+
+# Rule: Next.js SSR Memory Guardrails
+
+Applies to Next.js server-rendered code, including API routes, middleware, and Server Components.
+
+## 1) Global Scope Pollution
+
+- Prohibit `global.xxx` caching/state across requests unless intentionally implementing a singleton (for example a DB connection pool).
+- Do not use mutable global state for request data.
+
+## 2) Resource Connection Lifecycle
+
+- Ensure DB connections, file streams, and network resources are closed, released, or returned to pools when request work completes.
+- Do not leave open handles after the response path finishes.
+
+## 3) Third-Party Leak Prevention
+
+- Audit heavy Node.js libraries and avoid creating new heavy instances on every request.
+- Reuse safe singleton/module-scope clients where appropriate.
+
+## 4) Closure Memory Bloat
+
+- Do not capture full request/response objects in deep closures.
+- Extract only required properties before passing data to utilities.
+
+```ts
+const { userId, traceId } = requestContext;
+return handleServerTask({ userId, traceId });
+```

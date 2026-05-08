@@ -1,0 +1,20 @@
+---
+description: Prevent layout shifts by reserving stable UI space
+alwaysApply: true
+---
+
+# Visual Stability: Prevent Layout Shifts
+
+- ALWAYS pre-allocate layout space for media, async content, and late-rendered UI.
+- Set explicit `width`/`height` or a stable `aspect-ratio` for images, videos, embeds, and skeleton shells.
+- Do NOT insert dynamic blocks into zero-height containers that expand after data resolves.
+- When content is deferred, render a placeholder that matches the final block dimensions.
+
+## Example
+
+```tsx
+// Good: reserved space prevents reflow
+<div className="aspect-[16/9] w-full overflow-hidden rounded-md">
+  {isLoading ? <VideoSkeleton /> : <VideoPlayer />}
+</div>
+```

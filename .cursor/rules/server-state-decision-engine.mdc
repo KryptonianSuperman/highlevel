@@ -1,0 +1,13 @@
+---
+description: Meta-rules for determining the correct server-state and caching library.
+globs: ["package.json", "src/hooks/**/*.ts", "src/services/**/*.ts", "src/features/**/*.ts", "src/**/*.tsx"]
+alwaysApply: false
+---
+
+# Server State Decision Engine
+
+Before generating any data-fetching, caching, or server-state logic, you MUST inspect the project dependencies.
+
+- **Check for Redux Toolkit:** If `@reduxjs/toolkit` is present in `package.json`, you MUST strictly use **RTK Query** for all server-state and data fetching. Do not install or suggest TanStack Query.
+- **Fallback to TanStack:** If `@reduxjs/toolkit` is NOT present, default to using **TanStack Query** (`@tanstack/react-query`).
+- **Strict Boundary:** Under NO circumstances should standard Redux slices (`createSlice`), `createAsyncThunk`, or custom Redux middleware be used to handle API calls. All network requests must be delegated to either RTK Query or TanStack Query.

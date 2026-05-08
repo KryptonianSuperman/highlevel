@@ -1,0 +1,29 @@
+---
+description: Enforce polyfill checks before using modern browser APIs
+alwaysApply: true
+---
+
+# Browser API Polyfill Protocol
+
+## Pipeline Verification
+
+- Before using modern browser APIs (for example `IntersectionObserver`, `structuredClone`, or `ResizeObserver`), inspect the project build/runtime pipeline to determine whether polyfills are automatically provided.
+- Check relevant config and tooling (for example Next.js config, Babel/Webpack setup, and browser target settings) before assuming runtime support.
+
+## Required Recommendation Behavior
+
+- If automatic polyfilling is not present, recommend the required polyfill package and include the import/setup snippet before using the API in generated code.
+- Do not introduce compatibility-sensitive browser APIs without confirming either:
+  - baseline support for the user-defined browser target, or
+  - explicit polyfill setup.
+
+## Example
+
+```tsx
+// Add only when the project pipeline does not polyfill this API.
+import "intersection-observer";
+
+const observer = new IntersectionObserver((entries) => {
+  // ...
+});
+```

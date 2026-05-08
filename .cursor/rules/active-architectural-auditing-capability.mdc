@@ -1,0 +1,16 @@
+---
+description: Run architecture audit and remediate structural violations when requested
+alwaysApply: true
+---
+
+# Active Architectural Auditing Capability
+
+You have access to a custom AST scanning script to analyze the project's structural integrity.
+
+When the user asks you to "audit the codebase", "run an architecture check", or "fix structural issues":
+
+1. Open the terminal and execute: `npm run audit:architecture`.
+2. Read the console output thoroughly.
+3. If violations are found (e.g., Boundary Contagion, Missing Zod Validation, MFE Context Leaks), you MUST systematically go through the flagged files.
+4. For each flagged file, propose refactored code to fix the specific anti-pattern (e.g., remove `"use client"` and extract interactive parts into a slot component, or add a Zod schema).
+5. Explain the fixes concisely.

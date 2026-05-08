@@ -1,0 +1,36 @@
+---
+description: Enforce Next.js App Router boundary usage at route-segment files
+globs: src/app/**/{page,layout,loading,error}.tsx
+alwaysApply: false
+---
+
+# Next.js App Router Error/Suspense Boundaries
+
+Apply these rules when editing route segment files in `src/app/`.
+
+## Segment-Level Boundaries
+
+- Use `loading.tsx` only for route-segment-level loading fallbacks.
+- Use `error.tsx` only for route-segment-level error fallbacks.
+- `error.tsx` must include the `"use client"` directive.
+- Do not rely on route-level boundaries when only a subsection is async.
+
+## Granular Streaming in `page.tsx`
+
+- Keep inline `<Suspense>` boundaries in `page.tsx` for component-level streaming.
+- Wrap async sections by the visual loading sequence, not by arbitrary component depth.
+- Pair each async Suspense region with a localized error boundary when that region can fail independently.
+
+## Route-Level Blocking Is A Fallback
+
+- Use top-level route segment `loading.tsx`/`error.tsx` as the primary fallback only when the page cannot render meaningful UI without one blocking fetch.
+
+## Example Pattern in `page.tsx`
+
+```tsx
+<ErrorBoundary fallback={<OrdersErrorFallback />}>
+  <Suspense fallback={<OrdersTableSkeleton />}>
+    <OrdersTableAsync />
+  </Suspense>
+</ErrorBoundary>
+```

@@ -1,0 +1,46 @@
+---
+description: Protect Web Vitals with SSR-first rendering and leaf hydration boundaries
+globs: {app,pages,src}/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# UI Rendering Strategy & Component Delivery
+
+When generating or refactoring UI, preserve LCP and TTFB by defaulting to server-rendered structure.
+
+- Default to SSR/SSG for initial page loads, layout shells, and above-the-fold content.
+- Never use CSR for initial structural rendering.
+- Reserve client rendering for truly interactive leaves only: active state management, complex data flows (for example high-volume tabular UI), Canvas/WebGL, and animation-heavy interfaces.
+- Keep hydration boundaries tight: when a Client Component is required inside a server-rendered page, isolate it as a distinct leaf component.
+- Keep server pages/layouts mostly declarative and data-fetching oriented; avoid pulling large client trees into top-level shells.
+
+## Examples
+
+```tsx
+// ❌ BAD: Client rendering controls the whole page shell
+"use client";
+export default function DashboardPage() {
+  return <main><Header /><Hero /><InteractiveTable /></main>;
+}
+```
+
+```tsx
+// ✅ GOOD: Server-rendered shell with leaf client interactivity
+import InteractiveTable from "./interactive-table";
+
+export default async function DashboardPage() {
+  return (
+    <main>
+      <Header />
+      <Hero />
+      <InteractiveTable />
+    </main>
+  );
+}
+```
+
+```tsx
+// interactive-table.tsx
+"use client";
+// Client-only logic remains isolated here.
+```

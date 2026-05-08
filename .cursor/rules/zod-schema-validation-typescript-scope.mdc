@@ -1,0 +1,37 @@
+---
+description: Apply Zod validation standards when editing TypeScript files
+globs: **/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Zod Schema Validation Standards (TypeScript Scope)
+
+Apply these standards whenever working in TypeScript code that handles external input (API routes, Server Actions, forms, query params, and client-submitted payloads).
+
+## Requirements
+
+- Define Zod schemas before executing business logic.
+- Infer types using `z.infer<typeof SchemaName>`.
+- Do not create duplicate manually maintained interfaces for validated payloads.
+- Validate at boundaries and fail fast on invalid input.
+
+## Backend/API Pattern
+
+```ts
+const parseResult = inputSchema.safeParse(await request.json());
+if (!parseResult.success) {
+  return NextResponse.json(
+    { errors: parseResult.error.format() },
+    { status: 400 }
+  );
+}
+const input: Input = parseResult.data;
+```
+
+## Frontend/Form Pattern
+
+```ts
+const form = useForm<FormInput>({
+  resolver: zodResolver(formSchema),
+});
+```

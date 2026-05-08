@@ -1,0 +1,68 @@
+---
+description: Enforce functional components and guard-clause-first control flow
+alwaysApply: true
+---
+
+# Coding Standards: Component Architecture & Control Flow
+
+## 1. Functional Components
+
+- Use functional components exclusively. Do not use class-based components.
+- Define components using either:
+  - Standard function declarations (for example, `export default function ComponentName() { ... }`), or
+  - Arrow functions,
+  based on the project's existing style consistency.
+
+## 2. Guard Clauses & Early Returns
+
+- Prioritize early returns (guard clauses) at the top of functions/components to handle:
+  - Loading states
+  - Errors
+  - Null/undefined checks
+  - Edge cases
+- Keep the primary execution path at the outermost indentation level.
+- Do not wrap the main return path in `if/else` blocks when guard clauses can flatten the logic.
+- Avoid deep nesting for primary rendering logic.
+
+## 3. Example
+
+### Incorrect (Deep Nesting / Main path inside conditional)
+
+```tsx
+function UserProfile({ user, isLoading }) {
+  if (!isLoading) {
+    if (user) {
+      return (
+        <div>
+          <h1>{user.name}</h1>
+          <p>{user.email}</p>
+        </div>
+      );
+    } else {
+      return <div>User not found</div>;
+    }
+  } else {
+    return <div>Loading...</div>;
+  }
+}
+```
+
+### Correct (Early Returns / Guard Clauses)
+
+```tsx
+function UserProfile({ user, isLoading }) {
+  // Guard clause 1: Loading state
+  if (isLoading) return <div>Loading...</div>;
+
+  // Guard clause 2: Error/Null state
+  if (!user) return <div>User not found</div>;
+
+  // Primary execution path is flat
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      <p>{user.email}</p>
+    </div>
+  );
+}
+```

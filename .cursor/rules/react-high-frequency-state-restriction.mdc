@@ -1,0 +1,25 @@
+---
+description: Prevent high-frequency Canvas/WebGL-like values from using React state
+alwaysApply: true
+---
+
+# High-Frequency State Restriction
+
+Use this ESLint fragment:
+
+```json
+{
+  "plugins": ["react"],
+  "rules": {
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "VariableDeclarator[id.name=/mouse|scroll|position|coordinates/i] > CallExpression[callee.name='useState']",
+        "message": "High-frequency data should bypass React state. Use mutable useRefs and direct DOM/Canvas manipulation to avoid VDOM thrashing."
+      }
+    ]
+  }
+}
+```
+
+Prefer `useRef` + imperative updates for pointer, scroll, and coordinate streams.

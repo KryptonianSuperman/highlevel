@@ -1,0 +1,43 @@
+---
+description: Enforce render stability and main-thread offloading for responsive UI
+alwaysApply: true
+---
+
+# Rule: Main Thread Runtime & Render Stability
+
+When managing state or interactive UI, prioritize main-thread availability and prevent avoidable render churn.
+
+## 1) Render Optimization
+
+- Control component lifecycles to minimize unnecessary render work.
+- Memoize expensive computations with `useMemo` and callbacks with `useCallback` when dependency lists are stable and meaningful.
+- Keep prop references stable (objects/arrays/functions) to avoid cascading re-renders.
+- Use `React.memo` for pure/leaf components that receive frequent parent updates.
+
+```tsx
+const columns = useMemo(() => buildColumns(schema), [schema]);
+const onRowClick = useCallback((row: Row) => handleRowClick(row.id), [handleRowClick]);
+
+return <DataGrid columns={columns} onRowClick={onRowClick} />;
+```
+
+## 2) Execution Offloading
+
+- Never run massive synchronous operations on the main thread.
+- Offload heavy compute (large array processing, telemetry parsing, expensive state derivations) to Web Workers or background tasks.
+- Prefer chunked/deferred execution and concurrent rendering-friendly update patterns for expensive flows.
+- If logic must run on the client thread, split it into smaller units to keep input and rendering responsive.
+
+```ts
+worker.postMessage({ type: "DERIVE_METRICS", payload: rawTelemetry });
+```
+
+## Anti-Patterns
+
+- Single-pass synchronous processing over large datasets during interaction.
+- Re-creating complex props every render in high-frequency update UIs.
+
+## Acceptance Criteria
+
+- Expensive render paths use memoization and stable references.
+- Heavy computations do not block user input handling or frame rendering.

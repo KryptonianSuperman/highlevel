@@ -1,0 +1,20 @@
+---
+description: Enforce localized error boundaries for dynamic UI sections
+alwaysApply: true
+---
+
+# Visual Stability: Localized Error Boundaries
+
+- Wrap isolated widgets and complex async views in localized error boundaries.
+- A failure in one data stream must degrade gracefully without crashing the surrounding page.
+- Provide contextual fallback UI with a retry action where recovery is possible.
+- Do NOT route non-fatal widget errors into app-wide fatal boundaries.
+
+## Example
+
+```tsx
+// Good: failure is contained to one section
+<WidgetErrorBoundary fallback={<RevenueWidgetFallback />}>
+  <RevenueWidget />
+</WidgetErrorBoundary>
+```

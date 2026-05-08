@@ -1,0 +1,14 @@
+---
+description: Enforce centralized TanStack Query Key Factory conventions for stable cache keys.
+globs: ["src/hooks/queries/**/*.ts", "src/**/*.tsx"]
+alwaysApply: false
+---
+
+# TanStack Query Key Factory Convention
+
+- Keep one feature-local query key factory per feature query module (for example, `src/hooks/queries/users/queryKeys.ts`).
+- Export a single `queryKeys` object from each factory file; keep it as the only source of truth for query keys.
+- Define keys as readonly tuple-returning helpers (for example, `detail: (id: string) => ["users", "detail", id] as const`).
+- Never write inline keys in hooks or components (for example, avoid `queryKey: ["users", id]`).
+- Use the factory in every `useQuery`, `useInfiniteQuery`, cache invalidation, and optimistic update path (`getQueryData`, `setQueryData`, `invalidateQueries`).
+- Keep key segments stable and explicit (`entity`, `scope`, `params`) to avoid accidental cache collisions.

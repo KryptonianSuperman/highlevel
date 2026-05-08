@@ -1,0 +1,27 @@
+---
+description: Enforce feature-module encapsulation and shared/core promotion boundaries
+alwaysApply: true
+---
+
+# Rule: Hybrid Feature Architecture Boundaries
+
+## Core Principle
+
+Use feature-first colocation by default, with strict centralization for truly shared or global concerns.
+
+## Feature Module Boundaries
+
+- Keep single-use APIs, feature-local state, feature components, and feature-specific types inside `src/features/<feature-name>/`.
+- Treat each feature as an encapsulated module.
+- Do not deep-import internals from one feature into another feature.
+
+## Shared/Core Promotion Rules
+
+- Promote code to `src/shared/` or `src/core/` only when it is used by multiple features.
+- Keep common UI primitives (including shared Shadcn wrappers), global hooks, and generic utilities in shared/core.
+- If a feature-local component/function is needed by a second feature, move it to shared/core first, then import from that centralized location.
+
+## Example Decisions
+
+- If `src/features/orders/components/OrderBadge` is needed by `billing`, promote it to `src/shared/components/OrderBadge` before reuse.
+- If `src/features/checkout/api/createCheckoutSession` is only used in checkout, keep it under checkout.

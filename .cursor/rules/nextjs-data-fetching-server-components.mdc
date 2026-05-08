@@ -1,0 +1,14 @@
+---
+description: Enforce direct data fetching in Next.js Server Components
+globs: app/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Next.js Data Fetching Constraints
+
+Use React Server Components (RSC) as the direct data access layer.
+
+- ALWAYS fetch data directly within Server Components.
+- NEVER create intermediate Next.js App Router API routes (such as `app/api/...`) for internal UI data fetching.
+- ONLY create Route Handlers (`route.ts`) when exposing endpoints to external third-party services, webhooks, or external clients.
+- Await data fetching functions directly in async Server Components, and pass resolved data to Client Components only when interactivity is required.

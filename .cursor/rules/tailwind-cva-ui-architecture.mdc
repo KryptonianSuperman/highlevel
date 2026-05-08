@@ -1,0 +1,75 @@
+---
+description: Enforces scalable, utility-first Tailwind CSS architecture using class-variance-authority (cva) and tailwind-merge for UI components across React and Next.js environments.
+globs: ["*.tsx", "*.jsx", "*.ts"]
+alwaysApply: false
+---
+
+# Tailwind & UI Architecture Rules
+
+## Critical Directives
+- **Strict Utility-First:** Rely exclusively on Tailwind utility classes. Never generate custom CSS, SCSS modules, or use inline `style={{}}` tags unless handling dynamic calculations (like mouse-tracking animations) that Tailwind cannot natively compile.
+- **Component-Driven Abstraction:** Never use the `@apply` directive. If UI patterns repeat, extract them into reusable React components.
+- **Progressive Responsiveness:** Write mobile-first styles by default. Apply `sm:`, `md:`, `lg:`, and `xl:` overrides progressively.
+- **Design Tokens:** Minimize the use of arbitrary values (e.g., `bg-[#1a2b3c]`). If a hex code or specific spacing is required multiple times, instruct the developer to add it to `tailwind.config.ts`.
+
+## Dynamic Variants & Conflict Resolution
+- **CVA Integration:** Use `class-variance-authority` (`cva`) to define all UI component variants (e.g., `intent`, `size`, `state`).
+- **Class Merging:** Always process the final `className` string through a custom `cn()` utility function that combines `clsx` (for conditional logic) and `twMerge` (to resolve Tailwind specificity conflicts).
+
+## Class Sorting Convention
+Order Tailwind classes logically and consistently following the standard `prettier-plugin-tailwindcss` hierarchy:
+1. Base Layout (position, flex/grid)
+2. Spacing (m/p)
+3. Sizing (w/h)
+4. Typography
+5. Visuals (bg, border, shadow)
+6. Modifiers (hover, focus, dark)
+
+## Examples
+
+<example>
+// Valid: Component using cva and cn() for predictable overrides
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
+
+const buttonVariants = cva(
+  "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-slate-100",
+  {
+    variants: {
+      variant: {
+        default: "bg-slate-900 text-white hover:bg-slate-800",
+        destructive: "bg-red-500 text-white hover:bg-red-600",
+      },
+      size: {
+        default: "h-10 px-4 py-2",
+        sm: "h-9 rounded-md px-3",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+);
+
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {}
+
+export function Button({ className, variant, size, ...props }: ButtonProps) {
+  return (
+    <button className={cn(buttonVariants({ variant, size, className }))} {...props} />
+  );
+}
+</example>
+
+<example type="invalid">
+// Invalid: Using string concatenation without twMerge, arbitrary values, and inline styles
+export function BadButton({ className, isPrimary, ...props }) {
+  return (
+    <button
+      className={`flex items-center bg-[#1a2b3c] text-white p-2 ${isPrimary ? 'font-bold' : ''} ${className}`}
+      style={{ borderRadius: '8px' }}
+      {...props}
+    />
+  );
+}
+</example>

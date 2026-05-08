@@ -1,0 +1,19 @@
+---
+description: Enforce strict typing and verified API response contracts
+alwaysApply: true
+---
+
+# Strict Typing and API Response Validation
+
+## Zero `any` Policy
+- Never use the `any` type.
+- Fully type variables, function parameters, return types, and component props.
+- If a payload shape is genuinely unknown at compile time, use `unknown` and narrow with type guards before usage.
+
+## API Response Typing Protocol
+- Never guess API response shapes.
+- Verify response structure from one of these sources before defining types:
+  - Execute `curl` against the endpoint and inspect raw JSON.
+  - Read the local OpenAPI or Swagger schema.
+  - Ask the user for a sample raw JSON response.
+- Build interfaces/types strictly from verified output.

@@ -1,0 +1,17 @@
+---
+description: Govern SCSS fallback usage, scoping, and token discipline
+alwaysApply: true
+---
+
+# SCSS Fallback and Token Governance
+
+- ONLY use SCSS when Tailwind becomes unmanageable, requires complex pseudo-element orchestration, or for legacy/third-party overrides where Tailwind cannot be applied.
+- When SCSS is required, ALWAYS use CSS Modules with `[name].module.scss` for local scoping.
+- ALWAYS use `.scss` block syntax. NEVER use indented `.sass` syntax.
+- Restrict global SCSS files to resets (if not covered by preflight), global CSS custom properties, and `@font-face` declarations.
+- NEVER put component-specific classes or DOM element styling in global SCSS files.
+- NEVER use `@import`; ALWAYS use `@use` for variables, mixins, and functions.
+- Group shared configuration into partials and expose via a central `@forward` entry point so local modules can consume with one `@use`.
+- NEVER hardcode hex, `rgb/rgba`, or named colors in SCSS or inline styles.
+- In SCSS, map all values to globally defined design system tokens (`@use` variables or CSS custom properties).
+- Check the existing global palette/token set before introducing any new token.

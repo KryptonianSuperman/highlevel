@@ -1,0 +1,12 @@
+---
+description: Enforce Tailwind as the primary styling engine
+alwaysApply: true
+---
+
+# Tailwind Primary Styling Engine
+
+- ALWAYS default to Tailwind CSS utility classes for component styling.
+- Use the global Tailwind configuration (`tailwind.config.js` or equivalent) as the source of truth for tokens (colors, spacing, typography, breakpoints).
+- Do NOT write custom CSS/SCSS when the style can be achieved cleanly with standard or configured Tailwind utilities.
+- In Tailwind, use theme-mapped classes (for example `text-primary`, `gap-4`) instead of arbitrary values unless explicitly justified by a tokenized pattern.
+- NEVER hardcode structural magic numbers in class composition or inline styles when a tokenized utility exists.

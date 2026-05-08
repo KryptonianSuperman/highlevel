@@ -1,0 +1,16 @@
+---
+description: Enforce client-only isolation and memoization for intensive rendering
+globs: app/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Next.js Intensive Rendering Constraints
+
+Isolate high-frequency rendering workloads into optimized Client Components.
+
+- ISOLATE high-frequency processing into dedicated, heavily memoized Client Components.
+- NEVER use `useState` or `useReducer` for rapidly mutating telemetry data; store mutable data in `useRef` and interact directly with DOM/Canvas APIs when needed.
+- NEVER import intensive rendering components directly into a Server Component.
+- Mark intensive components with `"use client"`.
+- Apply strict memoization (`React.memo`, `useMemo`, `useCallback`) to minimize unnecessary re-renders.
+- Load intensive components with `next/dynamic` using `{ ssr: false }` to bypass SSR and protect initial payload performance.

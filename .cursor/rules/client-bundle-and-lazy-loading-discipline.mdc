@@ -1,0 +1,33 @@
+---
+description: Enforce lazy loading and protect initial client bundle for faster TTI
+alwaysApply: true
+---
+
+# Rule: Client Bundle & Lazy Loading Discipline
+
+When generating client-side logic and interactive components, keep the initial payload lean to preserve Time to Interactive (TTI).
+
+## Core Directives
+
+- Use dynamic imports for non-critical, below-the-fold, or interaction-triggered UI.
+- Do not include heavy dependencies in the initial client bundle when they are not needed for first paint/first interaction.
+- Split features by intent: render-critical code loads first, deferred code loads on demand.
+
+## Required Patterns
+
+```tsx
+const HeavyAnalyticsModal = dynamic(
+  () => import("@/features/analytics/components/heavy-analytics-modal"),
+  { ssr: false, loading: () => <ModalSkeleton /> }
+);
+```
+
+## Anti-Patterns
+
+- Importing heavy charting/modal/reporting libraries at the top level of route-critical components.
+- Bundling secondary-route features into first-load bundles.
+
+## Acceptance Criteria
+
+- First interaction path does not load non-critical heavy modules.
+- Deferred features are loaded only when needed by viewport or interaction.

@@ -1,0 +1,13 @@
+---
+description: Prioritize native third-party types and limit custom type creation
+alwaysApply: true
+---
+
+# Third-Party Type Sourcing Policy
+
+## Third-Party Imports
+- Prefer library-native exported types first using type-only imports.
+- If native types are missing, use `@types/<package>` when available.
+
+## Custom Type Creation
+- Create custom interfaces/types only as a last resort, after built-in, inferred, and third-party types are confirmed insufficient or unavailable.

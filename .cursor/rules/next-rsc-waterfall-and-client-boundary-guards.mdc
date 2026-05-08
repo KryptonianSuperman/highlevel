@@ -1,0 +1,29 @@
+---
+description: Catch RSC await waterfalls and risky client context export patterns
+alwaysApply: true
+---
+
+# Next.js RSC and Client Boundary Guards
+
+Use this ESLint fragment:
+
+```json
+{
+  "plugins": ["@next/next", "react"],
+  "rules": {
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "BlockStatement > ExpressionStatement:has(AwaitExpression) ~ ExpressionStatement:has(AwaitExpression)",
+        "message": "Potential RSC Data Waterfall detected. Wrap independent fetch requests in Promise.all()."
+      },
+      {
+        "selector": "Program:has(ExpressionStatement > Literal[value='use client']) ExportNamedDeclaration > VariableDeclaration > VariableDeclarator > CallExpression[callee.name='createContext']",
+        "message": "Client Boundary Contagion: Do not export Context Providers from generic client files. Isolate them in dedicated Provider components."
+      }
+    ]
+  }
+}
+```
+
+Parallelize independent data fetches and keep context providers isolated in dedicated client provider modules.

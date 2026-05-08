@@ -1,0 +1,19 @@
+---
+description: Require explicit browser baseline and apply it across frontend layers
+alwaysApply: true
+---
+
+# Browser Compatibility Baseline & Framework Scope
+
+## 1. Dynamic Baseline Check
+
+- Before generating, refactoring, or reviewing UI/frontend code, confirm the target browser compatibility baseline if it is not already present in the current context.
+- Ask explicitly (for example: "What browser support baseline should I target, such as last 2 versions, ES2015+, or stable Chrome/Firefox?").
+- Do NOT assume a compatibility baseline.
+- Wait for user input before selecting syntax, language targets, or browser APIs that depend on compatibility constraints.
+
+## 2. Framework Scope
+
+- Apply compatibility and syntax decisions uniformly across all frontend layers.
+- Treat standard React files and Next.js-specific files with the same browser-compatibility rigor.
+- Do not relax compatibility requirements for framework-specific entry points, routes, or components.

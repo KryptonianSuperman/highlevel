@@ -1,0 +1,39 @@
+---
+description: Prevent memory leaks and main-thread memory spikes in React CSR code
+globs: **/*.{js,jsx,ts,tsx}
+alwaysApply: false
+---
+
+# Rule: React CSR Memory Guardrails
+
+Applies to client-rendered React code.
+
+## 1) `useEffect` Cleanup Is Mandatory
+
+- Whenever `useEffect` creates event listeners, `setInterval`, `setTimeout`, WebSockets, or observers (for example `IntersectionObserver`), include a cleanup function in the return statement.
+- Cleanup must remove listeners, clear timers, close sockets, and disconnect observers.
+
+```tsx
+useEffect(() => {
+  const id = setInterval(() => {
+    setCount((c) => c + 1);
+  }, 1000);
+
+  return () => clearInterval(id);
+}, []);
+```
+
+## 2) Heavy Object Disposal
+
+- In Canvas/WebGL or large DOM workflows, explicitly dispose rendering contexts and unmount/teardown related resources.
+- Do not leave detached DOM nodes via orphaned `useRef` assignments.
+
+## 3) Stale Closure Prevention
+
+- Prevent stale closures in timers/listeners by including all reactive dependencies or using functional setters.
+- Prefer patterns like `setCount((c) => c + 1)` for interval/listener updates.
+
+## 4) Zod Parsing on Client
+
+- Avoid parsing massive payloads synchronously on the main thread.
+- For exceptionally large payloads, use chunking or Web Workers to prevent UI stalls and memory spikes.

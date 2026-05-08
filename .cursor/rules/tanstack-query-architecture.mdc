@@ -1,0 +1,15 @@
+---
+description: Architectural rules for data fetching using TanStack Query, including Zod validation and Key Factories.
+globs: ["src/hooks/queries/**/*.ts", "src/api/**/*.ts", "src/**/*.tsx"]
+alwaysApply: false
+---
+
+# TanStack Query Rules
+
+- **Zod Validation Pipeline:** All fetched data MUST be piped through a Zod validation schema inside the fetcher function *before* TanStack Query returns it.
+  - Example: `const data = await response.json(); return UserSchema.parse(data);`
+  - If the payload fails validation, allow the Zod error to throw so the query's `isError` state catches it.
+- **Query Key Factories:** Never use inline array query keys (for example, `["users", id]`). Always utilize a centralized Query Key Factory object/function to maintain key consistency and prevent cache invalidation typos.
+- **Custom Hook Abstraction:** Never invoke `useQuery` or `useMutation` directly inside UI components. Always encapsulate them within custom hooks (for example, `useUserData(id)`) to separate data-fetching logic from presentation.
+- **Separation of Concerns:** Keep actual network requests (for example, `fetch` or `axios`) in dedicated API/service files, cleanly separated from the React TanStack hooks.
+- **Optimistic Updates:** When generating `useMutation` hooks for POST/PUT/DELETE, automatically scaffold `onMutate`, `onError`, and `onSettled` callbacks to handle optimistic UI updates and cache rollbacks.

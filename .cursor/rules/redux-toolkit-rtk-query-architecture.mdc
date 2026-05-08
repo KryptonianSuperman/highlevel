@@ -1,0 +1,75 @@
+---
+description: Strict guidelines for Redux Toolkit and RTK Query architecture and code generation.
+globs: ["src/store/**/*.ts", "src/features/**/*.ts", "src/services/**/*.ts", "src/**/*.tsx"]
+alwaysApply: false
+---
+
+# Redux Toolkit & RTK Query Rules
+
+- Use `createSlice` only for synchronous global client UI state.
+- Use `createApi` for all asynchronous server state.
+- Keep one central base API in `src/services/api.ts` using `fetchBaseQuery`.
+- Do not place all endpoints in the base API definition.
+- Add feature-specific endpoints via `api.injectEndpoints()` (for example, `src/features/users/usersApi.ts`).
+- In React components, use RTK Query auto-generated hooks for data operations.
+- Never manually dispatch RTK Query endpoints in components.
+- Never use raw `useDispatch` or `useSelector`; always use `useAppDispatch` and `useAppSelector`.
+- Require explicit `PayloadAction<T>` typing in reducers.
+- Do not use `any` or `unknown` in Redux state/action typing.
+- Prefer Immer-style reducer updates (for example, `state.value = newValue`) instead of manual immutable spread-heavy patterns.
+
+## Examples
+
+```ts
+// ❌ BAD: async server state in createSlice thunk flow
+export const fetchUsers = createAsyncThunk("users/fetch", async () => {
+  const res = await fetch("/api/users");
+  return (await res.json()) as User[];
+});
+```
+
+```ts
+// ✅ GOOD: server state via RTK Query endpoint injection
+export const usersApi = api.injectEndpoints({
+  endpoints: (builder) => ({
+    getUsers: builder.query<User[], void>({
+      query: () => "/users",
+    }),
+  }),
+});
+
+export const { useGetUsersQuery } = usersApi;
+```
+
+```tsx
+// ❌ BAD: manual endpoint dispatch in component
+const dispatch = useDispatch();
+useEffect(() => {
+  dispatch(usersApi.endpoints.getUsers.initiate());
+}, [dispatch]);
+```
+
+```tsx
+// ✅ GOOD: auto-generated hook usage in component
+export function UsersList() {
+  const { data, isLoading } = useGetUsersQuery();
+  if (isLoading) return <div>Loading...</div>;
+  return <ul>{data?.map((u) => <li key={u.id}>{u.name}</li>)}</ul>;
+}
+```
+
+```ts
+// ✅ GOOD: strict PayloadAction typing + Immer mutation
+type CounterState = { value: number };
+const initialState: CounterState = { value: 0 };
+
+const counterSlice = createSlice({
+  name: "counter",
+  initialState,
+  reducers: {
+    setValue(state, action: PayloadAction<number>) {
+      state.value = action.payload;
+    },
+  },
+});
+```

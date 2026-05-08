@@ -1,0 +1,25 @@
+---
+description: Enforce exhaustive dependency arrays for React hooks
+alwaysApply: true
+---
+
+# React Hooks Dependency Discipline
+
+Use this ESLint fragment:
+
+```json
+{
+  "plugins": ["react", "react-hooks"],
+  "rules": {
+    "react-hooks/exhaustive-deps": "error"
+  }
+}
+```
+
+## Example
+
+```tsx
+useEffect(() => {
+  fetchData(userId);
+}, [userId, fetchData]);
+```

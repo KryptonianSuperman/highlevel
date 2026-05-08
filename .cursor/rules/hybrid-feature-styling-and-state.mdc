@@ -1,0 +1,25 @@
+---
+description: Enforce Tailwind-first styling and global-vs-local state/API placement
+alwaysApply: true
+---
+
+# Rule: Hybrid Feature Styling and State
+
+## Styling Directives (Tailwind-First)
+
+- Use Tailwind CSS as the default styling approach across the app.
+- Prefer Tailwind classes for component styling, especially in Shadcn-based UI work.
+- Only use SCSS when Tailwind is insufficient for the required behavior.
+- SCSS fallback must be local CSS Modules (`*.module.scss`) and follow `@use`/`@forward` patterns.
+
+## SCSS-Appropriate Cases
+
+- Complex SVG styling requirements
+- Advanced orientation/masking layouts
+- Complex multi-step CSS animations
+
+## State and API Placement
+
+- Place global domains (auth, user profiles, sessions, app-wide config) in `src/shared/` or `src/core/`.
+- Keep single-use APIs and highly localized state inside the owning feature directory.
+- Do not centralize feature-only state or APIs prematurely.

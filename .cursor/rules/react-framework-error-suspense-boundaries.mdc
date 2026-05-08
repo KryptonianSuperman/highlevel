@@ -1,0 +1,36 @@
+---
+description: Enforce granular Suspense with paired error boundaries in React and Next.js
+globs: **/*.tsx
+alwaysApply: false
+---
+
+# React & Framework Error/Suspense Boundaries
+
+When generating or modifying React applications (including Next.js, React Router, or standard SPAs):
+
+## Core Rules
+
+- Prefer granular Suspense boundaries around async, data-fetching components to support streaming UI.
+- Do not make Suspense boundaries more granular than the intended visual loading sequence.
+- Always pair a data-fetching Suspense boundary with an adjacent Error Boundary so localized failures do not crash the full tree.
+- Use route-level blocking boundaries only when the entire page layout depends on a single blocking fetch.
+
+## Framework Guidance
+
+- Standard React / React Router:
+  - Explicitly wrap with `ErrorBoundary` and `Suspense`.
+  - If using React Router deferred loaders, render `<Await>` inside `Suspense`.
+- Next.js App Router:
+  - Use `loading.tsx` and `error.tsx` only for route-segment-level fallbacks.
+  - `error.tsx` must include `"use client"`.
+  - Keep inline `Suspense` in `page.tsx` for granular component streaming.
+
+## Example Pattern
+
+```tsx
+<ErrorBoundary fallback={<WidgetErrorFallback />}>
+  <Suspense fallback={<WidgetSkeleton />}>
+    <AsyncWidget />
+  </Suspense>
+</ErrorBoundary>
+```

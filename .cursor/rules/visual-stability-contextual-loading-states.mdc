@@ -1,0 +1,20 @@
+---
+description: Require localized loading placeholders for async UI
+alwaysApply: true
+---
+
+# Visual Stability: Contextual Loading States
+
+- NEVER leave async regions blank while data is loading.
+- Use localized skeletons/placeholders that mirror the final component structure.
+- Avoid full-page blocking spinners for section-level or widget-level data updates.
+- Keep already rendered content interactive when a neighboring async section refreshes.
+
+## Example
+
+```tsx
+// Good: localized fallback preserves context
+<section aria-busy={isLoading}>
+  {isLoading ? <OrdersTableSkeleton /> : <OrdersTable rows={rows} />}
+</section>
+```
